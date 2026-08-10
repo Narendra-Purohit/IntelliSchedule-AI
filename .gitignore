@@ -1,0 +1,65 @@
+# =====================================================
+# IntelliSchedule AI - Root Git Ignore
+# =====================================================
+
+# ---------- Java / Maven ----------
+**/target/
+**/build/
+*.class
+*.jar
+*.war
+
+# ---------- Spring Boot ----------
+*.log
+
+# ---------- IDE ----------
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# ---------- Environment / Secrets ----------
+.env
+.env.*
+!.env.example
+
+# ---------- Python ----------
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.venv/
+**/venv/
+**/env/
+
+# ---------- Python generated ----------
+*.egg-info/
+dist/
+wheels/
+
+# ---------- Node / Frontend ----------
+**/node_modules/
+**/dist/
+**/.next/
+**/.vite/
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Logs ----------
+logs/
+*.log
+
+# ---------- Temporary ----------
+*.tmp
+*.temp
+*.swp
+
+# ---------- Database local files ----------
+*.db
+*.sqlite
