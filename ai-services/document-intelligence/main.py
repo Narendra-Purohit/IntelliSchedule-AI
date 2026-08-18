@@ -1,5 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
-import fitz
+import pymupdf
 
 from services.ocr_service import OCRService
 from services.gemini_extractor import GeminiExtractor
@@ -49,7 +49,7 @@ async def upload_document(
         # STEP 1: Read PDF using PyMuPDF
         # -----------------------------------------
 
-        pdf = fitz.open(
+        pdf = pymupdf.open(
             stream=file_bytes,
             filetype="pdf"
         )
