@@ -26,6 +26,15 @@ public class Subject {
     @Column(nullable = false)
     private Integer credits;
 
-    @Column(name = "periods_per_week", nullable = false)
-    private Integer periodsPerWeek;
+    @Column(name = "lecture_hours_per_week", nullable = false)
+    private Integer lectureHoursPerWeek;
+
+    @Column(name = "tutorial_hours_per_week")
+    private Integer tutorialHoursPerWeek = 0;
+
+    @Column(name = "practical_hours_per_week")
+    private Integer practicalHoursPerWeek = 0;
+
+    public Subject() {
+    }
 }
