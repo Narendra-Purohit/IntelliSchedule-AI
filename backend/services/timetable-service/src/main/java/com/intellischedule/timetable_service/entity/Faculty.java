@@ -1,9 +1,13 @@
 package com.intellischedule.timetable_service.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "faculty")
+@Getter
+@Setter
 public class Faculty {
 
     @Id
@@ -24,65 +28,4 @@ public class Faculty {
 
     @Column(name = "unavailable_slots")
     private String unavailableSlots;
-
-    public Faculty() {
-    }
-
-    public Faculty(
-            String facultyId,
-            String name,
-            String department,
-            String availableDays,
-            String unavailableSlots
-    ) {
-        this.facultyId = facultyId;
-        this.name = name;
-        this.department = department;
-        this.availableDays = availableDays;
-        this.unavailableSlots = unavailableSlots;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getFacultyId() {
-        return facultyId;
-    }
-
-    public void setFacultyId(String facultyId) {
-        this.facultyId = facultyId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public String getAvailableDays() {
-        return availableDays;
-    }
-
-    public void setAvailableDays(String availableDays) {
-        this.availableDays = availableDays;
-    }
-
-    public String getUnavailableSlots() {
-        return unavailableSlots;
-    }
-
-    public void setUnavailableSlots(String unavailableSlots) {
-        this.unavailableSlots = unavailableSlots;
-    }
 }
