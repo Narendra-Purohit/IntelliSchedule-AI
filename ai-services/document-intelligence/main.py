@@ -44,94 +44,58 @@ async def upload_document(
     file_bytes = await file.read()
 
     try:
-
-        # -----------------------------------------
         # STEP 1: Read PDF using PyMuPDF
-        # -----------------------------------------
-
         pdf = pymupdf.open(
             stream=file_bytes,
             filetype="pdf"
         )
 
         pages = []
-
-        for page_number, page in enumerate(
-            pdf,
-            start=1
-        ):
-
+        for page_number, page in enumerate(pdf, start=1):
             text = page.get_text("text")
-
             pages.append({
                 "page_number": page_number,
                 "text": text.strip()
             })
 
         page_count = len(pdf)
-
         pdf.close()
 
-        # -----------------------------------------
         # STEP 2: Combine PDF text
-        # -----------------------------------------
-
         raw_text = "\n".join(
-            page["text"]
-            for page in pages
+            page["text"] for page in pages
         ).strip()
 
-        # -----------------------------------------
         # STEP 3: OCR FALLBACK
-        # -----------------------------------------
-
         ocr_used = False
-
         if len(raw_text) < 50:
-
-            raw_text = (
-                ocr_service
-                .extract_text_from_pdf(file_bytes)
-            )
-
+            raw_text = ocr_service.extract_text_from_pdf(file_bytes)
             ocr_used = True
 
-        # -----------------------------------------
         # STEP 4: Gemini Extraction
-        # -----------------------------------------
+        academic_document = gemini_extractor.extract(raw_text)
 
-        academic_document = (
-            gemini_extractor.extract(raw_text)
-        )
-
-        # -----------------------------------------
         # STEP 5: Response
-        # -----------------------------------------
-
         return {
             "success": True,
             "filename": file.filename,
             "content_type": file.content_type,
             "page_count": page_count,
-            "extraction_method": (
-                "ocr"
-                if ocr_used
-                else "pymupdf"
-            ),
+            "extraction_method": "ocr" if ocr_used else "pymupdf",
             "data": academic_document.model_dump()
         }
 
     except pymupdf.FileDataError:
-    raise HTTPException(
-        status_code=400,
-        detail="Invalid or corrupted PDF file"
-    )
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or corrupted PDF file"
+        )
 
-except HTTPException:
-    raise
+    except HTTPException:
+        raise
 
-except Exception:
-    raise HTTPException(
-        status_code=500,
-        detail="Unable to process document at this time"
-    )
+    except Exception:
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to process document at this time"
+        )
