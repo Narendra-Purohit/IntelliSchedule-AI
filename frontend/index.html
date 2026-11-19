@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliSchedule-AI — Smart Timetable Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">📅 IntelliSchedule-AI</div>
+        <nav>
+            <a href="#timetable">Timetables</a>
+            <a href="#upload">Upload Syllabus</a>
+            <a href="#reports">Reports</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Automated Academic Schedule Engine</h1>
+            <p>Generate, visualize, and export conflict-free university timetables powered by AI.</p>
+        </section>
+
+        <section id="upload" class="card">
+            <h2>📄 Document Intelligence Upload</h2>
+            <p>Upload a course curriculum PDF to extract subjects and faculty allocations automatically.</p>
+            <input type="file" id="pdfFileInput" accept="application/pdf">
+            <button id="uploadBtn" class="btn primary">Extract with Gemini AI</button>
+            <div id="uploadStatus"></div>
+        </section>
+
+        <section id="timetable" class="card">
+            <h2>🗓️ Master Weekly Timetable</h2>
+            <div class="controls">
+                <button id="generateBtn" class="btn success">Run AI Generator</button>
+                <a href="http://localhost:8084/api/v1/reports/timetable/pdf" target="_blank" class="btn outline">Download PDF</a>
+                <a href="http://localhost:8084/api/v1/reports/timetable/excel" target="_blank" class="btn outline">Download Excel</a>
+            </div>
+            <div class="table-responsive">
+                <table id="timetableGrid">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Time</th>
+                            <th>Subject</th>
+                            <th>Code</th>
+                            <th>Faculty</th>
+                            <th>Room</th>
+                            <th>Section</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timetableBody">
+                        <tr><td colspan="7" class="text-center">Loading schedule data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
