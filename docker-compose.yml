@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: intellischedule-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_DATABASE: intelligent_timetable
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - intellischedule-net
+
+  api-gateway:
+    build: ./backend/services/api-gateway
+    container_name: intellischedule-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      SERVICES_AUTH_URL: http://auth-service:8081
+      SERVICES_TIMETABLE_URL: http://timetable-service:8083
+      SERVICES_REPORT_URL: http://report-service:8084
+    depends_on:
+      - mysql
+    networks:
+      - intellischedule-net
+
+  auth-service:
+    build: ./backend/services/auth-service
+    container_name: intellischedule-auth
+    ports:
+      - "8081:8081"
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD:-root}
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/intelligent_timetable
+    depends_on:
+      - mysql
+    networks:
+      - intellischedule-net
+
+  timetable-service:
+    build: ./backend/services/timetable-service
+    container_name: intellischedule-timetable
+    ports:
+      - "8083:8083"
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD:-root}
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/intelligent_timetable
+    depends_on:
+      - mysql
+    networks:
+      - intellischedule-net
+
+  report-service:
+    build: ./backend/services/report-service
+    container_name: intellischedule-report
+    ports:
+      - "8084:8084"
+    environment:
+      SERVICES_TIMETABLE_URL: http://timetable-service:8083
+    depends_on:
+      - timetable-service
+    networks:
+      - intellischedule-net
+
+  document-intelligence:
+    build: ./ai-services/document-intelligence
+    container_name: intellischedule-doc-intel
+    ports:
+      - "8000:8000"
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    networks:
+      - intellischedule-net
+
+volumes:
+  mysql_data:
+
+networks:
+  intellischedule-net:
+    driver: bridge
