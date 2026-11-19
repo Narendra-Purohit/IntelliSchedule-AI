@@ -121,9 +121,17 @@ async def upload_document(
             "data": academic_document.model_dump()
         }
 
-    except Exception as e:
+    except pymupdf.FileDataError:
+    raise HTTPException(
+        status_code=400,
+        detail="Invalid or corrupted PDF file"
+    )
 
-        raise HTTPException(
-            status_code=400,
-            detail=f"Unable to process PDF: {str(e)}"
-        )
+except HTTPException:
+    raise
+
+except Exception:
+    raise HTTPException(
+        status_code=500,
+        detail="Unable to process document at this time"
+    )
