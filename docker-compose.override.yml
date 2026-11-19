@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  mysql:
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 5
