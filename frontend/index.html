@@ -9,6 +9,7 @@
 <body>
     <header class="navbar">
         <div class="logo">📅 IntelliSchedule-AI</div>
+        <div class="status-pill">● System Online (Demo Mode)</div>
         <nav>
             <a href="#timetable">Timetables</a>
             <a href="#upload">Upload Syllabus</a>
@@ -17,26 +18,50 @@
     </header>
 
     <main class="container">
+        <!-- Live Alert Banner -->
+        <div id="alertBanner" class="alert-banner hidden"></div>
+
         <section class="hero">
             <h1>Automated Academic Schedule Engine</h1>
             <p>Generate, visualize, and export conflict-free university timetables powered by AI.</p>
         </section>
 
+        <!-- Document Intelligence Upload -->
         <section id="upload" class="card">
-            <h2>📄 Document Intelligence Upload</h2>
-            <p>Upload a course curriculum PDF to extract subjects and faculty allocations automatically.</p>
-            <input type="file" id="pdfFileInput" accept="application/pdf">
-            <button id="uploadBtn" class="btn primary">Extract with Gemini AI</button>
-            <div id="uploadStatus"></div>
+            <div class="card-header">
+                <h2>📄 Document Intelligence Upload</h2>
+                <span class="badge">Gemini 1.5 + OCR</span>
+            </div>
+            <p>Upload a course curriculum PDF (max 20 pages) to extract subjects and faculty allocations automatically.</p>
+            <div class="upload-box">
+                <input type="file" id="pdfFileInput" accept="application/pdf">
+                <button id="uploadBtn" class="btn primary">Extract with AI</button>
+            </div>
+            <div id="uploadStatus" class="status-msg"></div>
         </section>
 
+        <!-- Master Timetable View -->
         <section id="timetable" class="card">
-            <h2>🗓️ Master Weekly Timetable</h2>
-            <div class="controls">
-                <button id="generateBtn" class="btn success">Run AI Generator</button>
-                <a href="http://localhost:8084/api/v1/reports/timetable/pdf" target="_blank" class="btn outline">Download PDF</a>
-                <a href="http://localhost:8084/api/v1/reports/timetable/excel" target="_blank" class="btn outline">Download Excel</a>
+            <div class="card-header">
+                <h2>🗓️ Master Weekly Timetable</h2>
+                <div class="controls">
+                    <button id="generateBtn" class="btn success">⚡ Run AI Generator</button>
+                    <a href="http://localhost:8084/api/v1/reports/timetable/pdf" target="_blank" class="btn outline">Download PDF</a>
+                    <a href="http://localhost:8084/api/v1/reports/timetable/excel" target="_blank" class="btn outline">Download Excel</a>
+                </div>
             </div>
+
+            <!-- Day Filters -->
+            <div class="filter-bar">
+                <span>Filter by Day:</span>
+                <button class="filter-btn active" data-day="ALL">All Days</button>
+                <button class="filter-btn" data-day="Monday">Mon</button>
+                <button class="filter-btn" data-day="Tuesday">Tue</button>
+                <button class="filter-btn" data-day="Wednesday">Wed</button>
+                <button class="filter-btn" data-day="Thursday">Thu</button>
+                <button class="filter-btn" data-day="Friday">Fri</button>
+            </div>
+
             <div class="table-responsive">
                 <table id="timetableGrid">
                     <thead>
