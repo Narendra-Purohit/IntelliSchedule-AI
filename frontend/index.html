@@ -3,17 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IntelliSchedule-AI — Smart Timetable Dashboard</title>
+    <title>IntelliSchedule-AI — Academic Scheduling Platform</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="navbar">
-        <div class="logo">📅 IntelliSchedule-AI</div>
-        <div class="status-pill">● System Online (Demo Mode)</div>
-        <nav>
-            <a href="#timetable">Timetables</a>
-            <a href="#upload">Upload Syllabus</a>
-            <a href="#reports">Reports</a>
+        <div class="brand">
+            <span class="logo-icon">⚡</span>
+            <span class="logo-text">IntelliSchedule<span class="accent">AI</span></span>
+        </div>
+        <div class="system-status">
+            <span class="pulse-dot"></span>
+            <span>Live Interactive Demo</span>
+        </div>
+        <nav class="nav-links">
+            <a href="#timetable" class="active">Timetable</a>
+            <a href="#upload">Document Intel</a>
+            <a href="#reports">Exports</a>
         </nav>
     </header>
 
@@ -21,58 +29,69 @@
         <!-- Live Alert Banner -->
         <div id="alertBanner" class="alert-banner hidden"></div>
 
-        <section class="hero">
-            <h1>Automated Academic Schedule Engine</h1>
-            <p>Generate, visualize, and export conflict-free university timetables powered by AI.</p>
+        <!-- Hero Header -->
+        <section class="hero-section">
+            <div class="badge-pill">Enterprise Academic AI</div>
+            <h1>Automated Conflict-Free Timetable Engine</h1>
+            <p>Generate, visualize, edit, and export university schedules with real-time heuristic collision prevention.</p>
         </section>
 
-        <!-- Document Intelligence Upload -->
-        <section id="upload" class="card">
+        <!-- Document Intelligence Card -->
+        <section id="upload" class="glass-card">
             <div class="card-header">
-                <h2>📄 Document Intelligence Upload</h2>
-                <span class="badge">Gemini 1.5 + OCR</span>
+                <div>
+                    <h2>📄 Syllabus Document Intelligence</h2>
+                    <p class="subtitle">Upload university course PDF (max 20 pages) for vector text & entity extraction.</p>
+                </div>
+                <span class="badge ai-badge">PyMuPDF Engine</span>
             </div>
-            <p>Upload a course curriculum PDF (max 20 pages) to extract subjects and faculty allocations automatically.</p>
-            <div class="upload-box">
+            <div class="upload-zone">
                 <input type="file" id="pdfFileInput" accept="application/pdf">
-                <button id="uploadBtn" class="btn primary">Extract with AI</button>
+                <button id="uploadBtn" class="btn btn-primary">⚡ Extract Curriculum with AI</button>
             </div>
             <div id="uploadStatus" class="status-msg"></div>
         </section>
 
-        <!-- Master Timetable View -->
-        <section id="timetable" class="card">
+        <!-- Master Timetable Card with Edit Controls -->
+        <section id="timetable" class="glass-card">
             <div class="card-header">
-                <h2>🗓️ Master Weekly Timetable</h2>
-                <div class="controls">
-                    <button id="generateBtn" class="btn success">⚡ Run AI Generator</button>
-                    <a href="http://localhost:8084/api/v1/reports/timetable/pdf" target="_blank" class="btn outline">Download PDF</a>
-                    <a href="http://localhost:8084/api/v1/reports/timetable/excel" target="_blank" class="btn outline">Download Excel</a>
+                <div>
+                    <h2>🗓️ Master Weekly Academic Timetable</h2>
+                    <p class="subtitle">Drag & Drop rows to swap slots | Double-click or click Edit button to reassign</p>
+                </div>
+                <div class="action-buttons">
+                    <button id="generateBtn" class="btn btn-generate">⚡ Run AI Generator</button>
+                    <!-- Relative URLs so downloads always hit the active port! -->
+                    <a href="/api/v1/reports/timetable/pdf" target="_blank" class="btn btn-outline">📥 Download PDF</a>
+                    <a href="/api/v1/reports/timetable/excel" target="_blank" class="btn btn-outline">📊 Download Excel</a>
                 </div>
             </div>
 
-            <!-- Day Filters -->
-            <div class="filter-bar">
-                <span>Filter by Day:</span>
-                <button class="filter-btn active" data-day="ALL">All Days</button>
-                <button class="filter-btn" data-day="Monday">Mon</button>
-                <button class="filter-btn" data-day="Tuesday">Tue</button>
-                <button class="filter-btn" data-day="Wednesday">Wed</button>
-                <button class="filter-btn" data-day="Thursday">Thu</button>
-                <button class="filter-btn" data-day="Friday">Fri</button>
+            <!-- Day Filter Pills -->
+            <div class="filter-wrapper">
+                <span class="filter-label">Filter Day:</span>
+                <div class="filter-pills">
+                    <button class="filter-btn active" data-day="ALL">All Days</button>
+                    <button class="filter-btn" data-day="Monday">Monday</button>
+                    <button class="filter-btn" data-day="Tuesday">Tuesday</button>
+                    <button class="filter-btn" data-day="Wednesday">Wednesday</button>
+                    <button class="filter-btn" data-day="Thursday">Thursday</button>
+                    <button class="filter-btn" data-day="Friday">Friday</button>
+                </div>
             </div>
 
-            <div class="table-responsive">
+            <!-- Responsive Timetable Grid -->
+            <div class="table-container">
                 <table id="timetableGrid">
                     <thead>
                         <tr>
                             <th>Day</th>
-                            <th>Time</th>
-                            <th>Subject</th>
-                            <th>Code</th>
-                            <th>Faculty</th>
-                            <th>Room</th>
-                            <th>Section</th>
+                            <th>Time Window</th>
+                            <th>Subject & Code</th>
+                            <th>Faculty Member</th>
+                            <th>Classroom</th>
+                            <th>Cohort</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody id="timetableBody">
@@ -82,6 +101,54 @@
             </div>
         </section>
     </main>
+
+    <!-- Interactive Edit Modal Dialog -->
+    <div id="editModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>✏️ Edit Class Allocation</h3>
+                <button id="closeModalBtn" class="close-x">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editScheduleId">
+                <div class="form-group">
+                    <label>Course Name & Code</label>
+                    <input type="text" id="editSubjectName" disabled class="input-disabled">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Day of Week</label>
+                        <select id="editDaySelect" class="form-control">
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Classroom / Lab</label>
+                        <select id="editRoomSelect" class="form-control">
+                            <option value="LH-101">LH-101 (Lecture Hall)</option>
+                            <option value="LH-102">LH-102 (Lecture Hall)</option>
+                            <option value="LH-103">LH-103 (Lecture Hall)</option>
+                            <option value="LH-104">LH-104 (Lecture Hall)</option>
+                            <option value="Lab-3">Lab-3 (Computer Lab)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Allocated Faculty</label>
+                    <input type="text" id="editFacultyName" class="form-control">
+                </div>
+                <div id="modalConflictAlert" class="conflict-banner hidden"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelModalBtn" class="btn btn-outline">Cancel</button>
+                <button id="saveSlotBtn" class="btn btn-primary">💾 Save Changes</button>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>
