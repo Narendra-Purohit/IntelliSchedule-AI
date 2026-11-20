@@ -20,11 +20,11 @@ async function loadTimetable(dayFilter = "ALL") {
         allSchedules = await res.json();
         renderTable(dayFilter);
     } catch (e) {
-        tbody.innerHTML = `<tr><td colspan='7' class='text-center' style='color:#dc2626;'>Unable to connect to service (${e.message}). Ensure platform is running.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan='8' class='text-center' style='color:#dc2626;'>Unable to connect to service (${e.message}). Ensure platform is running.</td></tr>`;
     }
 }
 
-// Render Table Rows with Draggable handlers
+// Render Table Rows with dedicated Drag Handle and Events
 function renderTable(dayFilter = "ALL") {
     const tbody = document.getElementById("timetableBody");
     tbody.innerHTML = "";
@@ -34,7 +34,7 @@ function renderTable(dayFilter = "ALL") {
         : allSchedules.filter(item => (item.dayOfWeek || "").toLowerCase() === dayFilter.toLowerCase());
 
     if (!filtered || filtered.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='7' class='text-center'>No classes scheduled for selected filter.</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='8' class='text-center'>No classes scheduled for selected filter.</td></tr>";
         return;
     }
 
@@ -45,6 +45,9 @@ function renderTable(dayFilter = "ALL") {
         tr.setAttribute("data-id", item.id);
 
         tr.innerHTML = `
+            <td style="text-align: center; vertical-align: middle;">
+                <span class="drag-handle" title="Click & Drag to Swap Timeslot">⠿</span>
+            </td>
             <td><strong>${item.dayOfWeek || '-'}</strong></td>
             <td>${item.timeSlot ? item.timeSlot.startTime + ' - ' + item.timeSlot.endTime : '-'}</td>
             <td>
@@ -63,7 +66,8 @@ function renderTable(dayFilter = "ALL") {
         tr.addEventListener("dragstart", (e) => {
             draggedScheduleId = item.id;
             tr.classList.add("dragging-row");
-            e.dataTransfer.setData("text/plain", item.id);
+            e.dataTransfer.effectAllowed = "move";
+            e.dataTransfer.setData("text/plain", String(item.id));
         });
 
         tr.addEventListener("dragend", () => {
@@ -73,6 +77,7 @@ function renderTable(dayFilter = "ALL") {
 
         tr.addEventListener("dragover", (e) => {
             e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
             tr.classList.add("drag-over-row");
         });
 
@@ -92,7 +97,7 @@ function renderTable(dayFilter = "ALL") {
     });
 }
 
-// Atomic Slot Swap
+// Atomic Slot Swap with Conflict Safety
 function handleSlotSwap(idA, idB) {
     const a = allSchedules.find(s => s.id === idA);
     const b = allSchedules.find(s => s.id === idB);
@@ -111,9 +116,12 @@ function handleSlotSwap(idA, idB) {
     b.dayOfWeek = tempDay;
     b.timeSlot = tempTime;
 
-    showAlert(`✔ Swapped "${a.subject.name}" with "${b.subject.name}"!`, "success");
-    const activeDay = document.querySelector(".filter-btn.active") ? document.querySelector(".filter-btn.active").getAttribute("data-day") : "ALL";
-    renderTable(activeDay || "ALL");
+    showAlert(`✔ Successfully swapped "${a.subject.name}" (${a.dayOfWeek}) with "${b.subject.name}" (${b.dayOfWeek})!`, "success");
+    renderTable("ALL");
+    // Activate the All Days button
+    document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+    const allBtn = document.querySelector(".filter-btn[data-day='ALL']");
+    if (allBtn) allBtn.classList.add("active");
 }
 
 // Modal Edit Dialog Functions

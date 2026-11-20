@@ -52,16 +52,15 @@
             <div id="uploadStatus" class="status-msg"></div>
         </section>
 
-        <!-- Master Timetable Card with Edit Controls -->
+        <!-- Master Timetable Card with Drag-and-Drop & Edit Controls -->
         <section id="timetable" class="glass-card">
             <div class="card-header">
                 <div>
                     <h2>🗓️ Master Weekly Academic Timetable</h2>
-                    <p class="subtitle">Drag & Drop rows to swap slots | Double-click or click Edit button to reassign</p>
+                    <div class="drag-tip-badge">💡 <strong>Drag & Drop:</strong> Grab the <strong>⠿ Move handle</strong> on any row and drop onto another row to swap timeslots!</div>
                 </div>
                 <div class="action-buttons">
                     <button id="generateBtn" class="btn btn-generate">⚡ Run AI Generator</button>
-                    <!-- Relative URLs so downloads always hit the active port! -->
                     <a href="/api/v1/reports/timetable/pdf" target="_blank" class="btn btn-outline">📥 Download PDF</a>
                     <a href="/api/v1/reports/timetable/excel" target="_blank" class="btn btn-outline">📊 Download Excel</a>
                 </div>
@@ -85,17 +84,18 @@
                 <table id="timetableGrid">
                     <thead>
                         <tr>
+                            <th style="width: 50px; text-align: center;">Move</th>
                             <th>Day</th>
                             <th>Time Window</th>
                             <th>Subject & Code</th>
                             <th>Faculty Member</th>
                             <th>Classroom</th>
                             <th>Cohort</th>
-                            <th class="text-center">Action</th>
+                            <th class="text-center" style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody id="timetableBody">
-                        <tr><td colspan="7" class="text-center">Loading schedule data...</td></tr>
+                        <tr><td colspan="8" class="text-center">Loading schedule data...</td></tr>
                     </tbody>
                 </table>
             </div>

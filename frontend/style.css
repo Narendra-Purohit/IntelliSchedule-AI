@@ -83,6 +83,17 @@ body {
 .card-header h2 { font-size: 1.3rem; font-weight: 700; color: #0f172a; }
 .subtitle { font-size: 0.88rem; color: var(--text-muted); margin-top: 2px; }
 
+.drag-tip-badge {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    display: inline-block;
+}
+
 /* Badges */
 .badge { display: inline-block; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.8rem; font-weight: 700; }
 .ai-badge { background: #fdf2f8; color: #db2777; border: 1px solid #fbcfe8; }
@@ -136,11 +147,37 @@ td { padding: 0.95rem 1rem; border-bottom: 1px solid var(--border); font-size: 0
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: #f8fafc; }
 
-/* Draggable states */
-.draggable-row { cursor: grab; }
-.draggable-row:active { cursor: grabbing; }
-.dragging-row { opacity: 0.3; background: #eff6ff !important; border: 2px dashed #3b82f6 !important; }
-.drag-over-row { background: #dbeafe !important; border-top: 3px solid #2563eb !important; }
+/* Drag and Drop Enhanced Styles */
+.draggable-row {
+    user-select: none;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+.drag-handle {
+    cursor: grab;
+    font-size: 1.25rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+.drag-handle:hover {
+    color: #2563eb;
+    transform: scale(1.2);
+}
+.draggable-row:active .drag-handle {
+    cursor: grabbing;
+}
+.dragging-row {
+    opacity: 0.35;
+    background: #eff6ff !important;
+    border: 2px dashed #3b82f6 !important;
+}
+.drag-over-row {
+    background: #dbeafe !important;
+    border-top: 3px solid #2563eb !important;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
 
 /* Modal */
 .modal-overlay {
