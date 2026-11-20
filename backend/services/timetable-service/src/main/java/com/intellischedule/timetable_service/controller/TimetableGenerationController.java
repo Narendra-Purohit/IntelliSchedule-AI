@@ -11,18 +11,24 @@ import java.util.List;
 @RequestMapping("/api/v1/timetables")
 public class TimetableGenerationController {
 
-    private final TimetableGenerationService
-            timetableGenerationService;
+    private final TimetableGenerationService timetableGenerationService;
 
     public TimetableGenerationController(
             TimetableGenerationService timetableGenerationService
     ) {
-        this.timetableGenerationService =
-                timetableGenerationService;
+        this.timetableGenerationService = timetableGenerationService;
     }
 
     @PostMapping("/generate")
-    public ResponseEntity<List<Timetable>> generateTimetable() {
+    public ResponseEntity<List<Timetable>> generateTimetable(
+            @RequestParam(required = false) Long programId,
+            @RequestParam(required = false) Long semesterId
+    ) {
+        if (programId != null && semesterId != null) {
+            return ResponseEntity.ok(
+                    timetableGenerationService.generateTimetableForCohort(programId, semesterId)
+            );
+        }
 
         return ResponseEntity.ok(
                 timetableGenerationService.generateTimetable()

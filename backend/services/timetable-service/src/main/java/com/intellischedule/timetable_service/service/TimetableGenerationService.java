@@ -599,4 +599,41 @@ public class TimetableGenerationService {
                     day.trim().toLowerCase();
         };
     }
+
+    public List<Timetable> generateTimetableForCohort(Long programId, Long semesterId) {
+        List<SubjectAllocation> all = subjectAllocationRepository.findAll();
+        List<SubjectAllocation> cohortAllocations = all.stream()
+                .filter(sa -> sa.getProgram() != null && programId.equals(sa.getProgram().getId()))
+                .filter(sa -> sa.getSemester() != null && semesterId.equals(sa.getSemester().getId()))
+                .toList();
+
+        if (cohortAllocations.isEmpty()) {
+            return generateTimetable();
+        }
+
+        List<FacultyAllocation> facultyAllocations = facultyAllocationRepository.findAll();
+        List<Room> rooms = roomRepository.findAll();
+        List<TimeSlot> timeSlots = timeSlotRepository.findAll();
+        List<Timetable> cohortTimetables = new ArrayList<>();
+
+        for (SubjectAllocation subjectAllocation : cohortAllocations) {
+            FacultyAllocation facultyAllocation = findMatchingFacultyAllocation(facultyAllocations, subjectAllocation);
+            Room assignedRoom = findAvailableRoom(rooms, subjectAllocation.getSubject());
+            if (assignedRoom != null && !timeSlots.isEmpty()) {
+                TimeSlot slot = timeSlots.get(cohortTimetables.size() % timeSlots.size());
+                Timetable t = new Timetable();
+                t.setSubject(subjectAllocation.getSubject());
+                t.setProgram(subjectAllocation.getProgram());
+                t.setSemester(subjectAllocation.getSemester());
+                t.setSection(subjectAllocation.getSection());
+                t.setFaculty(facultyAllocation != null ? facultyAllocation.getFaculty() : null);
+                t.setRoom(assignedRoom);
+                t.setTimeSlot(slot);
+                t.setDayOfWeek(slot.getDayOfWeek());
+                cohortTimetables.add(timetableRepository.save(t));
+            }
+        }
+        return cohortTimetables;
+    }
+
 }
